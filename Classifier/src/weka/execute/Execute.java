@@ -13,14 +13,14 @@ import weka.training.Training;
 public class Execute {
 	public static void main(String[] args) {
 		
-	    boolean verbose = false; //args[0].equals("-v");
+	    boolean verbose = true; //args[0].equals("-v");
 	    
-	    String technique = "NaiveBayes"; //args[0];
+	    String technique = "J48"; //args[0];
 	    String trainingPath = "G:\\projeto de metodologia científica\\training";//args[1];
 	    String testPath = "G:\\projeto de metodologia científica\\test"; //args[2];
 	    
 	    if(verbose){
-	    	technique = args[1];
+	    	//technique = args[1];
 	    }
 	    
 		Training training = new Training();
@@ -31,7 +31,7 @@ public class Execute {
 		//set the class attribute
 		relationInstance.setClassIndex(Training.CLASS_INDEX);
 		
-		for(String category : Training.TECHNIQUES){
+		for(String category : Training.CLASSES){
 			String path = trainingPath + File.separator + category;
 			try {
 				training.generatedTrainingSet(path, allAttributes, relationInstance, category);
@@ -49,21 +49,22 @@ public class Execute {
 		
 		try {
 			Evaluation evaluation = new Evaluation(relationInstance);
-			Instances relationTest = new Instances("RelationTest", allAttributes, 1);
-	        relationTest.setClassIndex(Training.CLASS_INDEX);
+			Instances instancesTest = new Instances("RelationTest", allAttributes, 1);
+	        instancesTest.setClassIndex(Training.CLASS_INDEX);
 	        
-	        for(String category : Training.TECHNIQUES){
+	        for(String category : Training.CLASSES){
 				String path = testPath + File.separator + category;
 				try {
-					training.generatedTrainingSet(path, allAttributes, relationTest, category);
+					training.generatedTrainingSet(path, allAttributes, instancesTest, category);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			evaluation.evaluateModel(classificationTechnique, relationTest);
+			evaluation.evaluateModel(classificationTechnique, instancesTest);
 			if(verbose) {
-	            System.out.println(evaluation.toSummaryString(true));
-	            System.out.println(evaluation.toClassDetailsString());
+				training.printClass(classificationTechnique, instancesTest.listIterator());
+	           /* System.out.println(evaluation.toSummaryString(true));
+	            System.out.println(evaluation.toClassDetailsString());*/
 	        }
 	        System.out.println("precision: " + evaluation.weightedPrecision());
 	        System.out.println("recall: " + evaluation.weightedRecall());

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -30,7 +31,9 @@ public class Training {
 	public static final int TOTAL_CLASS = 4;
 	public static final int INSTANCES_SIZE = 257;
 	
-	public static final String[] TECHNIQUES = {"digitos", "letras", "digitos_letras", "sem_caracteres" };
+	public static final String[] CLASSES = {"letras", "sem_caracteres", "digitos_letras", "digitos"};
+	
+	private ArrayList<String> filesNames = new ArrayList<>();
 	
 	public static void createClassifiers() {
 		classifiers = new HashMap<String, Classifier>();
@@ -53,15 +56,16 @@ public class Training {
 			allAttributes.add(new Attribute("numeric " + i));
 		}
 		
+		
 		//add the data classes 
 		ArrayList<String> classes = new ArrayList<>(TOTAL_CLASS);
-		for(String t : TECHNIQUES){
+		for(String t : CLASSES){
 			classes.add(t);
 		}
 		Attribute classesAttribute = new Attribute("classes", classes);
 		
 		allAttributes.add(classesAttribute);
-		
+		allAttributes.add(new Attribute("numeric index"));
 		return allAttributes;
 		
 	}
@@ -69,23 +73,27 @@ public class Training {
 	public void generatedTrainingSet(String path, ArrayList<Attribute> allAttributes, Instances relationInstance, String category) throws IOException {
 		
 		File files = new File(path);
+		int index = 0;
 		for(File f : files.listFiles()){
 			List<Double> percentColors = buildArrayPercentageColor(f);
-			trainingAlgorithm(relationInstance, allAttributes, percentColors, category);
+			trainingAlgorithm(index, relationInstance, allAttributes, percentColors, category);
+			filesNames.add(f.getName());
+			index++;
 		}
 	}
 
-	private static void trainingAlgorithm(Instances relationInstance, ArrayList<Attribute> allAttributes, List<Double> percentColors, String category) {
+	private static void trainingAlgorithm(int index, Instances relationInstance, ArrayList<Attribute> allAttributes, List<Double> percentColors, String category) {
 		Instance instance = new DenseInstance(relationInstance.numAttributes());
 		for(int i = 0 ; i < percentColors.size(); i++){
 			instance.setValue(allAttributes.get(i), percentColors.get(i));
 		}
-		
-		instance.setValue(allAttributes.get(CLASS_INDEX), category);
+		if (!category.isEmpty()) {
+			instance.setValue(allAttributes.get(CLASS_INDEX), category);
+		}
+		instance.setValue(allAttributes.get(CLASS_INDEX + 1), index);
 		relationInstance.add(instance);
 		
 	}
-	
 	
 	private static final double LUMINANCE_RED = 0.299D;
     private static final double LUMINANCE_GREEN = 0.587D;
@@ -98,8 +106,8 @@ public class Training {
         List<Integer> colors = new ArrayList<Integer>();
         double maxWidth = 0.0D;
         double maxHeight = 0.0D;
-        for (int col = 0; col < height; col++) {
-            for (int row = 0; row < width; row++) {
+        for (int row = 0; row < width; row++) {
+            for (int col = 0; col < height; col++) {
                 Color c = new Color(img.getRGB(row, col));
                /* colors.add(c.getRed());
                 colors.add(c.getGreen());
@@ -122,12 +130,12 @@ public class Training {
         return scalesPercents;
 	}
 
-	public static void printClass(List<Instance> lettersInstances) throws Exception {
-		
-		/*ListIterator<Instance> it = lettersInstances.listIterator();
-		while(it.hasNext()){
-			Instance inst = it.next();
-		}*/
+	public void printClass(Classifier classificationTechnique, ListIterator<Instance> listIterator) throws Exception {
+		while(listIterator.hasNext()){
+			Instance inst = listIterator.next();
+			String c = CLASSES[(int)classificationTechnique.classifyInstance(inst)];
+			System.out.println(filesNames.get((int)inst.value(CLASS_INDEX + 1))+ ": "  + c);
+		}
 		
 	}
 

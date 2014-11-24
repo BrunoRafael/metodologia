@@ -38,7 +38,7 @@ public class CaractereImagesClassifier {
 	        String parameter = "";//args[0];
 	        
 	        boolean verbose = parameter.equals("-v");
-			String tec = "J48";//args[0];
+			String tec = "NaiveBayes";//args[0];
 			String pathTrain = "G:\\projeto de metodologia científica\\training";//args[1];
 			String pathTest = "G:\\projeto de metodologia científica\\test";//args[2];
 	        HashMap<String, Classifier> classifers = new HashMap<String, Classifier>(){
@@ -117,10 +117,10 @@ public class CaractereImagesClassifier {
 
 	        Instance imageInstance = new DenseInstance(CAPACITY);
 	        for (int i = 0; i < histogram.length; i++) {
-	            imageInstance.setValue((Attribute) wekaAttributes.get(i), histogram[i]);
+	            imageInstance.setValue(wekaAttributes.get(i), histogram[i]);
 	        }
 	        if (!classe.isEmpty()) {
-	            imageInstance.setValue((Attribute) wekaAttributes.get(INDEX), classe);
+	            imageInstance.setValue(wekaAttributes.get(INDEX), classe);
 	        }
 	        isTrainingSet.add(imageInstance);
 	    }
