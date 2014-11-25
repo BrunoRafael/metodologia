@@ -13,15 +13,10 @@ import weka.training.Training;
 public class Execute {
 	public static void main(String[] args) {
 		
-	    boolean verbose = true; //args[0].equals("-v");
-	    
-	    String technique = "J48"; //args[0];
-	    String trainingPath = "G:\\projeto de metodologia científica\\training";//args[1];
-	    String testPath = "G:\\projeto de metodologia científica\\test"; //args[2];
-	    
-	    if(verbose){
-	    	//technique = args[1];
-	    }
+	    boolean verbose = Boolean.valueOf(args[0]);
+	    String technique = args[1];
+	    String trainingPath = args[2];
+	    String testPath = args[3];
 	    
 		Training training = new Training();
 		
@@ -36,7 +31,8 @@ public class Execute {
 			try {
 				training.generatedTrainingSet(path, allAttributes, relationInstance, category);
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				System.exit(1);
 			}
 		}
 		
@@ -44,7 +40,8 @@ public class Execute {
 		try {
 			classificationTechnique.buildClassifier(relationInstance);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.exit(1);
 		}
 		
 		try {
@@ -57,7 +54,8 @@ public class Execute {
 				try {
 					training.generatedTrainingSet(path, allAttributes, instancesTest, category);
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					System.exit(1);
 				}
 			}
 			evaluation.evaluateModel(classificationTechnique, instancesTest);
@@ -72,8 +70,8 @@ public class Execute {
 	        System.out.println("f-measure: " + evaluation.weightedFMeasure());
  			
 		} catch (Exception e1) {
-			e1.printStackTrace();
-			System.out.println("ERRO");
+			//e1.printStackTrace();
+			System.exit(1);
 		}
 	}
 }
