@@ -62,14 +62,15 @@ public class Execute {
 			}
 			evaluation.evaluateModel(classificationTechnique, instancesTest);
 			if(verbose) {
-				training.printClass(classificationTechnique, instancesTest.listIterator());
+				training.printClass(allAttributes, classificationTechnique, instancesTest.listIterator());
 	           /* System.out.println(evaluation.toSummaryString(true));
 	            System.out.println(evaluation.toClassDetailsString());*/
 	        }
+			
 	        System.out.println("precision: " + evaluation.weightedPrecision());
 	        System.out.println("recall: " + evaluation.weightedRecall());
 	        System.out.println("f-measure: " + evaluation.weightedFMeasure());
-			
+ 			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.out.println("ERRO");

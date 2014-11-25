@@ -65,7 +65,6 @@ public class Training {
 		Attribute classesAttribute = new Attribute("classes", classes);
 		
 		allAttributes.add(classesAttribute);
-		allAttributes.add(new Attribute("numeric index"));
 		return allAttributes;
 		
 	}
@@ -87,10 +86,7 @@ public class Training {
 		for(int i = 0 ; i < percentColors.size(); i++){
 			instance.setValue(allAttributes.get(i), percentColors.get(i));
 		}
-		if (!category.isEmpty()) {
-			instance.setValue(allAttributes.get(CLASS_INDEX), category);
-		}
-		instance.setValue(allAttributes.get(CLASS_INDEX + 1), index);
+		instance.setValue(allAttributes.get(CLASS_INDEX), category);
 		relationInstance.add(instance);
 		
 	}
@@ -129,12 +125,15 @@ public class Training {
         }
         return scalesPercents;
 	}
-
-	public void printClass(Classifier classificationTechnique, ListIterator<Instance> listIterator) throws Exception {
+	
+	public void printClass(List<Attribute> allAttributes, Classifier classificationTechnique, ListIterator<Instance> listIterator) throws Exception {
+		int i = 0;
 		while(listIterator.hasNext()){
 			Instance inst = listIterator.next();
 			String c = CLASSES[(int)classificationTechnique.classifyInstance(inst)];
-			System.out.println(filesNames.get((int)inst.value(CLASS_INDEX + 1))+ ": "  + c);
+			
+			System.out.println(filesNames.get(i)+ ": "  + c);
+			i++;
 		}
 		
 	}
